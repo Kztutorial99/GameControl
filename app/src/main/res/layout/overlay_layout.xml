@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/card_dark"
+    android:padding="12dp"
+    android:minWidth="180dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GameControl"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvOverlayDevice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No device"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:layout_marginBottom="8dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnOverlayToggle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Toggle Mapping"
+        android:textSize="11sp"
+        style="@style/Widget.Material3.Button.TonalButton" />
+
+</LinearLayout>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<usb>
+    <!-- Keyboard class -->
+    <usb-device class="3" subclass="1" protocol="1" />
+    <!-- Mouse class -->
+    <usb-device class="3" subclass="1" protocol="2" />
+    <!-- Generic HID -->
+    <usb-device class="3" subclass="0" protocol="0" />
+    <!-- Game controllers (various vendors) -->
+    <usb-device class="255" subclass="0" protocol="0" />
+</usb>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GameControl</string>
+    <string name="service_description">GameControl maps keyboard and mouse input to touch events for gaming</string>
+    <string name="service_summary">Input mapping service</string>
+    <string name="btn_start_service">Start Service</string>
+    <string name="btn_stop_service">Stop Service</string>
+    <string name="btn_configure">Configure Mapping</string>
+    <string name="status_disconnected">No device connected</string>
+    <string name="status_connected">Device connected</string>
+    <string name="status_service_running">Service Running</string>
+    <string name="status_service_stopped">Service Stopped</string>
+    <string name="channel_name">GameControl Service</string>
+    <string name="channel_description">Foreground service notification</string>
+</resources>

@@ -1,116 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/bg_dark"
-    android:padding="24dp">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="GameControl"
-        android:textSize="28sp"
-        android:textColor="@color/text_primary"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Keyboard &amp; Mouse Mapper"
-        android:textSize="14sp"
-        android:textColor="@color/text_secondary"
-        android:layout_marginBottom="32dp" />
+    android:background="@color/bg_dark">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
-
-        <View
-            android:id="@+id/statusDot"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:background="@color/status_red" />
+        android:orientation="vertical"
+        android:padding="24dp">
 
         <TextView
-            android:id="@+id/tvServiceStatus"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/status_service_stopped"
+            android:text="GameControl"
+            android:textSize="28sp"
             android:textColor="@color/text_primary"
-            android:textSize="16sp"
-            android:layout_marginStart="12dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="32dp">
-
-        <View
-            android:id="@+id/deviceDot"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:background="@color/status_red" />
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
 
         <TextView
-            android:id="@+id/tvDeviceStatus"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/status_disconnected"
-            android:textColor="@color/text_primary"
+            android:text="Keyboard &amp; Mouse Mapper (Shizuku)"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Service Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <View
+                android:id="@+id/statusDot"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:background="@color/status_red" />
+
+            <TextView
+                android:id="@+id/tvServiceStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_service_stopped"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:layout_marginStart="12dp" />
+        </LinearLayout>
+
+        <!-- Device Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <View
+                android:id="@+id/deviceDot"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:background="@color/status_red" />
+
+            <TextView
+                android:id="@+id/tvDeviceStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_disconnected"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:layout_marginStart="12dp" />
+        </LinearLayout>
+
+        <!-- Permissions -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnShizuku"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Connect Shizuku"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOverlayPermission"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Allow Overlay"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Service Toggle -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnToggleService"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/btn_start_service"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/card_dark"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Key Mapping Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Key Mapping"
             android:textSize="16sp"
-            android:layout_marginStart="12dp" />
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnProfiles"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Game Profiles"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnKeymapEditor"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Edit Key Mapping"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCalibrate"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Calibrate Coordinates"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Device Info -->
+        <TextView
+            android:id="@+id/tvDeviceInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connect a keyboard or mouse via OTG"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:gravity="center" />
+
     </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnToggleService"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="@string/btn_start_service"
-        android:layout_marginBottom="12dp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAccessibility"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Enable Accessibility"
-        style="@style/Widget.Material3.Button.OutlinedButton"
-        android:layout_marginBottom="12dp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnOverlayPermission"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Allow Overlay"
-        style="@style/Widget.Material3.Button.OutlinedButton"
-        android:layout_marginBottom="12dp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnConfigure"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="@string/btn_configure"
-        style="@style/Widget.Material3.Button.TonalButton" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <TextView
-        android:id="@+id/tvDeviceInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Connect a keyboard or mouse via OTG"
-        android:textColor="@color/text_secondary"
-        android:textSize="12sp"
-        android:gravity="center" />
-
-</LinearLayout>
+</ScrollView>

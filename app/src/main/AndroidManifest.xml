@@ -35,6 +35,22 @@
                 android:resource="@xml/device_filter" />
         </activity>
 
+        <activity
+            android:name=".config.KeyMapEditorActivity"
+            android:exported="false"
+            android:label="Key Mapping Editor" />
+
+        <activity
+            android:name=".config.ProfileListActivity"
+            android:exported="false"
+            android:label="Game Profiles" />
+
+        <activity
+            android:name=".config.CalibrationActivity"
+            android:exported="false"
+            android:theme="@style/Theme.GameControl"
+            android:label="Calibrate" />
+
         <service
             android:name=".service.GameControlService"
             android:exported="false"

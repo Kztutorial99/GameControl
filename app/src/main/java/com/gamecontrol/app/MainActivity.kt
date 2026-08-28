@@ -8,8 +8,11 @@ import android.view.KeyEvent
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.gamecontrol.app.config.CalibrationActivity
+import com.gamecontrol.app.config.KeyMapEditorActivity
+import com.gamecontrol.app.config.ProfileListActivity
+import com.gamecontrol.app.config.ProfileManager
 import com.gamecontrol.app.input.InputMapper
-import com.gamecontrol.app.input.TouchInjector
 import com.gamecontrol.app.overlay.OverlayManager
 import com.gamecontrol.app.service.GameControlService
 import com.gamecontrol.app.usb.UsbDeviceManager
@@ -21,7 +24,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnToggleService: MaterialButton
     private lateinit var btnShizuku: MaterialButton
     private lateinit var btnOverlayPermission: MaterialButton
-    private lateinit var btnConfigure: MaterialButton
+    private lateinit var btnProfiles: MaterialButton
+    private lateinit var btnKeymapEditor: MaterialButton
+    private lateinit var btnCalibrate: MaterialButton
     private lateinit var tvServiceStatus: TextView
     private lateinit var tvDeviceStatus: TextView
     private lateinit var tvDeviceInfo: TextView
@@ -29,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private var usbDeviceManager: UsbDeviceManager? = null
     private var overlayManager: OverlayManager? = null
 
-    private val shizukuPermissionListener = Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
+    private val shizukuPermissionListener = Shizuku.OnRequestPermissionResultListener { _, grantResult ->
         if (grantResult == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Shizuku permission granted!", Toast.LENGTH_SHORT).show()
             updateShizukuStatus()
@@ -39,6 +44,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        ProfileManager.init(this)
 
         bindViews()
         setupListeners()
@@ -63,22 +70,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindViews() {
         btnToggleService = findViewById(R.id.btnToggleService)
-        btnShizuku = findViewById(R.id.btnAccessibility)
+        btnShizuku = findViewById(R.id.btnShizuku)
         btnOverlayPermission = findViewById(R.id.btnOverlayPermission)
-        btnConfigure = findViewById(R.id.btnConfigure)
+        btnProfiles = findViewById(R.id.btnProfiles)
+        btnKeymapEditor = findViewById(R.id.btnKeymapEditor)
+        btnCalibrate = findViewById(R.id.btnCalibrate)
         tvServiceStatus = findViewById(R.id.tvServiceStatus)
         tvDeviceStatus = findViewById(R.id.tvDeviceStatus)
         tvDeviceInfo = findViewById(R.id.tvDeviceInfo)
     }
 
     private fun setupListeners() {
-        btnToggleService.setOnClickListener {
-            toggleService()
-        }
+        btnToggleService.setOnClickListener { toggleService() }
 
         btnShizuku.setOnClickListener {
             if (!Shizuku.pingBinder()) {
-                Toast.makeText(this, "Install Shizuku app first and activate it via ADB", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Install Shizuku app first and activate via ADB", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
             if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
@@ -90,18 +97,23 @@ class MainActivity : AppCompatActivity() {
 
         btnOverlayPermission.setOnClickListener {
             if (!Settings.canDrawOverlays(this)) {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    android.net.Uri.parse("package:$packageName")
-                )
+                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, android.net.Uri.parse("package:$packageName"))
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "Overlay permission already granted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Overlay already granted", Toast.LENGTH_SHORT).show()
             }
         }
 
-        btnConfigure.setOnClickListener {
-            Toast.makeText(this, "Key mapping config coming soon", Toast.LENGTH_SHORT).show()
+        btnProfiles.setOnClickListener {
+            startActivity(Intent(this, ProfileListActivity::class.java))
+        }
+
+        btnKeymapEditor.setOnClickListener {
+            startActivity(Intent(this, KeyMapEditorActivity::class.java))
+        }
+
+        btnCalibrate.setOnClickListener {
+            startActivity(Intent(this, CalibrationActivity::class.java))
         }
     }
 
@@ -113,8 +125,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Grant Shizuku permission first", Toast.LENGTH_LONG).show()
                 return
             }
-            val intent = Intent(this, GameControlService::class.java)
-            startForegroundService(intent)
+            startForegroundService(Intent(this, GameControlService::class.java))
         }
         updateServiceStatus()
     }
@@ -136,7 +147,7 @@ class MainActivity : AppCompatActivity() {
         if (devices.isNotEmpty()) {
             tvDeviceStatus.text = getString(R.string.status_connected)
             tvDeviceStatus.setTextColor(getColor(R.color.status_green))
-            tvDeviceInfo.text = devices.joinToString("\n") { it.name }
+            tvDeviceInfo.text = devices.joinToString("\n") { "${it.name} [kb=${it.isKeyboard}, mouse=${it.isMouse}]" }
         } else {
             tvDeviceStatus.text = getString(R.string.status_disconnected)
             tvDeviceStatus.setTextColor(getColor(R.color.status_red))

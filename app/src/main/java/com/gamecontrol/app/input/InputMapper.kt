@@ -4,19 +4,17 @@ import android.util.Log
 import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
-import com.gamecontrol.app.config.KeyMapConfig
 import com.gamecontrol.app.config.KeyMapEntry
+import com.gamecontrol.app.config.ProfileManager
 
 object InputMapper {
 
     const val TAG = "InputMapper"
 
-    private var keyMapConfig = KeyMapConfig
     private var isMappingEnabled = true
 
     fun init() {
-        keyMapConfig.load()
-        Log.d(TAG, "InputMapper initialized with ${keyMapConfig.mappings.size} mappings")
+        Log.d(TAG, "InputMapper initialized with ${ProfileManager.getMappings().size} mappings")
     }
 
     fun release() {
@@ -24,7 +22,7 @@ object InputMapper {
     }
 
     fun reloadConfig() {
-        keyMapConfig.load()
+        // ProfileManager handles this
     }
 
     fun handleKeyEvent(event: KeyEvent?): Boolean {
@@ -34,7 +32,7 @@ object InputMapper {
         val keyCode = event.keyCode
         val action = event.action
 
-        val mapping = keyMapConfig.mappings.find { it.keyCode == keyCode } ?: return false
+        val mapping = ProfileManager.getMappings().find { it.keyCode == keyCode } ?: return false
 
         Log.d(TAG, "Key event: code=$keyCode, action=$action, mapped to ${mapping.action}")
 

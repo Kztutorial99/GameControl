@@ -1,6 +1,7 @@
 package com.gamecontrol.app
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
 import android.view.KeyEvent
@@ -8,15 +9,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.gamecontrol.app.input.InputMapper
+import com.gamecontrol.app.input.TouchInjector
 import com.gamecontrol.app.overlay.OverlayManager
 import com.gamecontrol.app.service.GameControlService
 import com.gamecontrol.app.usb.UsbDeviceManager
 import com.google.android.material.button.MaterialButton
+import rikka.shizuku.Shizuku
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var btnToggleService: MaterialButton
-    private lateinit var btnAccessibility: MaterialButton
+    private lateinit var btnShizuku: MaterialButton
     private lateinit var btnOverlayPermission: MaterialButton
     private lateinit var btnConfigure: MaterialButton
     private lateinit var tvServiceStatus: TextView
@@ -25,6 +28,13 @@ class MainActivity : AppCompatActivity() {
 
     private var usbDeviceManager: UsbDeviceManager? = null
     private var overlayManager: OverlayManager? = null
+
+    private val shizukuPermissionListener = Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
+        if (grantResult == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Shizuku permission granted!", Toast.LENGTH_SHORT).show()
+            updateShizukuStatus()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,17 +45,25 @@ class MainActivity : AppCompatActivity() {
 
         usbDeviceManager = UsbDeviceManager(this)
         overlayManager = OverlayManager(this)
+
+        Shizuku.addRequestPermissionResultListener(shizukuPermissionListener)
     }
 
     override fun onResume() {
         super.onResume()
         updateServiceStatus()
         updateDeviceStatus()
+        updateShizukuStatus()
+    }
+
+    override fun onDestroy() {
+        Shizuku.removeRequestPermissionResultListener(shizukuPermissionListener)
+        super.onDestroy()
     }
 
     private fun bindViews() {
         btnToggleService = findViewById(R.id.btnToggleService)
-        btnAccessibility = findViewById(R.id.btnAccessibility)
+        btnShizuku = findViewById(R.id.btnAccessibility)
         btnOverlayPermission = findViewById(R.id.btnOverlayPermission)
         btnConfigure = findViewById(R.id.btnConfigure)
         tvServiceStatus = findViewById(R.id.tvServiceStatus)
@@ -58,10 +76,16 @@ class MainActivity : AppCompatActivity() {
             toggleService()
         }
 
-        btnAccessibility.setOnClickListener {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            startActivity(intent)
-            Toast.makeText(this, "Enable GameControl in Accessibility settings", Toast.LENGTH_LONG).show()
+        btnShizuku.setOnClickListener {
+            if (!Shizuku.pingBinder()) {
+                Toast.makeText(this, "Install Shizuku app first and activate it via ADB", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
+                Shizuku.requestPermission(0)
+            } else {
+                Toast.makeText(this, "Shizuku already granted", Toast.LENGTH_SHORT).show()
+            }
         }
 
         btnOverlayPermission.setOnClickListener {
@@ -83,10 +107,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun toggleService() {
         if (GameControlService.isRunning) {
-            GameControlService.instance?.stopSelf()
+            stopService(Intent(this, GameControlService::class.java))
         } else {
-            if (!isAccessibilityServiceEnabled()) {
-                Toast.makeText(this, "Enable Accessibility Service first", Toast.LENGTH_LONG).show()
+            if (!Shizuku.pingBinder() || Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Grant Shizuku permission first", Toast.LENGTH_LONG).show()
                 return
             }
             val intent = Intent(this, GameControlService::class.java)
@@ -120,12 +144,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isAccessibilityServiceEnabled(): Boolean {
-        val prefString = Settings.Secure.getString(
-            contentResolver,
-            Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
-        ) ?: return false
-        return prefString.contains("${packageName}/${GameControlService::class.java.name}")
+    private fun updateShizukuStatus() {
+        when {
+            !Shizuku.pingBinder() -> {
+                btnShizuku.text = "Install & Activate Shizuku"
+                btnShizuku.isEnabled = true
+            }
+            Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED -> {
+                btnShizuku.text = "Grant Shizuku Permission"
+                btnShizuku.isEnabled = true
+            }
+            else -> {
+                btnShizuku.text = "Shizuku ✓ Connected"
+                btnShizuku.isEnabled = false
+            }
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

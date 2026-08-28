@@ -84,12 +84,12 @@ object TouchInjector {
         if (!isReady) return
         try {
             val now = SystemClock.uptimeMillis()
-            val down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, x, y, 1, 1.0f, 1.0f, 0, 0.0f, 0.0f, 0)
+            val down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, x, y, 0)
             down.source = InputDevice.SOURCE_TOUCHSCREEN
-            val up = MotionEvent.obtain(now, now + 50, MotionEvent.ACTION_UP, x, y, 1, 1.0f, 1.0f, 0, 0.0f, 0.0f, 0)
+            val up = MotionEvent.obtain(now, now + 50, MotionEvent.ACTION_UP, x, y, 0)
             up.source = InputDevice.SOURCE_TOUCHSCREEN
 
-            injectMethod?.invoke(inputManager, down, 2) // INJECT_MODE_ASYNC
+            injectMethod?.invoke(inputManager, down, 2)
             injectMethod?.invoke(inputManager, up, 2)
 
             down.recycle()
@@ -108,7 +108,7 @@ object TouchInjector {
             val steps = 10
             val stepDuration = durationMs / steps
 
-            val down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, startX, startY, 1, 1.0f, 1.0f, 0, 0.0f, 0.0f, 0)
+            val down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, startX, startY, 0)
             down.source = InputDevice.SOURCE_TOUCHSCREEN
             injectMethod?.invoke(inputManager, down, 2)
             down.recycle()
@@ -117,14 +117,14 @@ object TouchInjector {
                 val t = i.toFloat() / steps
                 val cx = startX + (endX - startX) * t
                 val cy = startY + (endY - startY) * t
-                val move = MotionEvent.obtain(now, now + stepDuration * i, MotionEvent.ACTION_MOVE, cx, cy, 1, 1.0f, 1.0f, 0, 0.0f, 0.0f, 0)
+                val move = MotionEvent.obtain(now, now + stepDuration * i, MotionEvent.ACTION_MOVE, cx, cy, 0)
                 move.source = InputDevice.SOURCE_TOUCHSCREEN
                 injectMethod?.invoke(inputManager, move, 2)
                 move.recycle()
                 Thread.sleep(stepDuration)
             }
 
-            val up = MotionEvent.obtain(now, now + durationMs, MotionEvent.ACTION_UP, endX, endY, 1, 1.0f, 1.0f, 0, 0.0f, 0.0f, 0)
+            val up = MotionEvent.obtain(now, now + durationMs, MotionEvent.ACTION_UP, endX, endY, 0)
             up.source = InputDevice.SOURCE_TOUCHSCREEN
             injectMethod?.invoke(inputManager, up, 2)
             up.recycle()
@@ -139,14 +139,14 @@ object TouchInjector {
         if (!isReady) return
         try {
             val now = SystemClock.uptimeMillis()
-            val down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, x, y, 1, 1.0f, 1.0f, 0, 0.0f, 0.0f, 0)
+            val down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, x, y, 0)
             down.source = InputDevice.SOURCE_TOUCHSCREEN
             injectMethod?.invoke(inputManager, down, 2)
             down.recycle()
 
             Thread.sleep(durationMs)
 
-            val up = MotionEvent.obtain(now, now + durationMs, MotionEvent.ACTION_UP, x, y, 1, 1.0f, 1.0f, 0, 0.0f, 0.0f, 0)
+            val up = MotionEvent.obtain(now, now + durationMs, MotionEvent.ACTION_UP, x, y, 0)
             up.source = InputDevice.SOURCE_TOUCHSCREEN
             injectMethod?.invoke(inputManager, up, 2)
             up.recycle()
